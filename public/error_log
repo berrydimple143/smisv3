@@ -1,0 +1,4 @@
+[03-Dec-2021 05:54:26 UTC] PHP Fatal error:  Cannot redeclare App\Http\Livewire\Registrar\SubjectActivity::render() in /home3/altussynergy/smis.altustechit/app/Http/Livewire/Registrar/SubjectActivity.php on line 101
+[03-Dec-2021 05:54:36 UTC] PHP Fatal error:  Cannot redeclare App\Http\Livewire\Registrar\SubjectActivity::render() in /home3/altussynergy/smis.altustechit/app/Http/Livewire/Registrar/SubjectActivity.php on line 101
+[20-Dec-2021 06:46:50 UTC] PHP Fatal error:  Cannot redeclare App\Http\Livewire\Registrar\Student::$course_id in /home3/altussynergy/smis.altustechit/app/Http/Livewire/Registrar/Student.php on line 54
+[20-Dec-2021 06:47:49 UTC] PHP Fatal error:  Cannot redeclare App\Http\Livewire\Registrar\Student::$course_id in /home3/altussynergy/smis.altustechit/app/Http/Livewire/Registrar/Student.php on line 54
