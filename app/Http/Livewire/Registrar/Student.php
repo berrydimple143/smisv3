@@ -264,7 +264,7 @@ class Student extends Component
     public function store() {
         $dataValid = $this->validate();
         $filename = $birth = "";
-        $now = (string)Carbon::now();
+        $now = Carbon::now();
         if($dataValid['fileName']) {
             $str = HelperController::removePunctuations((string)$now, '-', ':', ' ');
             $filename = $this->last_name.$str.'.png';
