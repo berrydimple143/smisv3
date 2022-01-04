@@ -266,10 +266,8 @@ class Student extends Component
         $filename = $birth = "";
         if($dataValid['fileName']) {
             $now = (string)Carbon::now();
-            $str = str_replace(" ", "", $now);
-            $str2 = str_replace("-", "", $str);
-            $str3 = str_replace(":", "", $str2);
-            $filename = $this->last_name.$str3.'.png';
+            $str = HelperController::removePunctuations((string)$now, '-', ':', ' ');
+            $filename = $this->last_name.$str.'.png';
             $dataValid['fileName'] = $this->fileName->storeAs('profiles', $filename);
         }
         if($dataValid['birthCertificate']) {
@@ -277,7 +275,7 @@ class Student extends Component
         }
         //$curriculum = Curriculum::where('course_id', $this->course_id)->first();
         if(empty($this->student_number)) {
-            $this->student_number = uniqid();
+            $this->student_number = (string)$now->year.'-'.(string)$now->hour.(string)$now->minute.(string)$now->second; 
         }
         $now = Carbon::now();
         $rn = HelperController::removePunctuations((string)$now, '-', ':', ' ');
