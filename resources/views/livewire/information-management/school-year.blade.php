@@ -91,6 +91,7 @@
     			                	<th style="color: white;" nowrap>School Year</th>			                    
     			                    <th style="color: white;" nowrap>Start Date</th>				                    		                    			                    
     			                    <th style="color: white;" nowrap>End Date</th>
+    			                    <th style="width: 190px; color: white;" nowrap>Status</th>
     			                    <th style="width: 190px; color: white;" nowrap>Action</th>
     			                </tr>
 			                </thead>
@@ -100,22 +101,50 @@
 			                        $sdate = $edate = 'Not set';
 		                    		if($scyear->start_date) { $sdate = App\Http\Controllers\HelperController::convertDateToString($scyear->start_date); }
 		                    		if($scyear->end_date) { $edate = App\Http\Controllers\HelperController::convertDateToString($scyear->end_date); }
+		                    		$status = "Inactive";
+		                    		$status_class = "danger";
+		                    		if($scyear->status == 1 or $scyear->status == '1') {
+		                    		    $status = "Active"; 
+		                    		    $status_class = "success";
+		                    		}
 			                    ?>
 		                        <tr>    
 		                        	<td>{{ $scyear->description }}</td>                        
 		                            <td>{{ $sdate }}</td>    	                            
 		                            <td>{{ $edate }}</td> 
 		                            <td>
+		                                <button type="button" wire:click="$emit('changeStatus', {{ $scyear->id }})" class="btn btn-{{ $status_class }}" data-toggle="modal" data-target="#changeStatusModal">{{ $status }}</button>
+		                            </td> 
+		                            <td>
 		                                <button wire:click="edit({{ $scyear->id }})" type="button" class="btn btn-info"><i class="cil-pencil"></i>&nbsp;Edit</button>
-                                        <button type="button" wire:click="deleteThisId({{ $scyear->id }})" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteSchoolYearModal"><i class="cil-trash"></i>&nbsp;Delete</button>
+                                        <button type="button" wire:click="deleteThisId({{ $scyear->id }})" class="btn btn-danger" data-toggle="modal" data-target="#deleteSchoolYearModal"><i class="cil-trash"></i>&nbsp;Delete</button>
 		                            </td>
 		                        </tr>	
 		                        @empty
-		                            <tr><td colspan="4">No school year yet ...</td></tr>
+		                            <tr><td colspan="5">No school year yet ...</td></tr>
 			                    @endforelse
 			                </tbody>
 			            </table>
 			            {!! $schoolyears->links() !!}
+			        </div>
+			        
+			        <div wire:ignore.self class="modal fade" id="changeStatusModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+			            <div class="modal-dialog" role="document">
+			                <div class="modal-content">
+			                    <div class="modal-header">
+			                        <h5 class="modal-title" id="deleteModalLabel">Change Status</h5>
+			                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                            <span aria-hidden="true close-btn">×</span>
+			                        </button>
+			                    </div>
+			                    <div class="modal-body">
+			                        <p>{{ $stat_modal_content }}</p>
+			                    </div>
+			                    <div class="modal-footer">
+			                        <button type="button" wire:click.prevent="changeNow" class="btn btn-{{ $stat_btn_style }}" data-dismiss="modal">{{ $stat_btn_txt }}</button>
+			                    </div>
+			                </div>
+			            </div>
 			        </div>
 			        
 			        <div wire:ignore.self class="modal fade" id="deleteSchoolYearModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

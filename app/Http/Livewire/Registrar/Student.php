@@ -416,6 +416,7 @@ class Student extends Component
        $this->guardian_street = $student->guardian_street;
        $this->guardian_municipality = $student->guardian_municipality;
        $this->guardian_province = $student->guardian_province;
+       $this->guardian_occupation = $student->guardian_occupation;
        $this->lrn = $student->lrn;
        $this->admission_date = $student->admission_date;
        $stat = StudentStatus::where('id', $student->status)->first();

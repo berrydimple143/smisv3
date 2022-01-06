@@ -26,8 +26,10 @@ class SchoolYear extends Component
     public $description, $start_date, $end_date;
     public $semester1_start_date, $semester2_start_date, $semester3_start_date;
     public $semester1_end_date, $semester2_end_date, $semester3_end_date;
+    public $stat_btn_txt = "Activate", $stat_btn_style = "success", $status_chosen_id;
+    public $stat_modal_content = "The status is inactive at the moment. Please activate using the button below:";
     
-    protected $listeners = ['addSemesterValue'];
+    protected $listeners = ['addSemesterValue', 'changeStatus'];
     
     protected function rules() {
         return [
@@ -120,7 +122,28 @@ class SchoolYear extends Component
     public function addSemester($id) {
         $this->emit('semesterValue', $id);
     }
-    
+    public function changeStatus($id) {
+        $this->status_chosen_id = $id;
+        $scyear = StudentSchoolYear::where('id', $id)->first();
+        if($scyear->status == 1 or $scyear->status == '1') {
+		    $this->stat_modal_content = "The status is already active. If you want to de-activate it, please click the button below:";
+            $this->stat_btn_style = "danger";
+            $this->stat_btn_txt = "De-activate";
+		} else {
+		    $this->stat_modal_content = "The status is inactive at the moment. Please activate using the button below:";
+            $this->stat_btn_style = "success";
+            $this->stat_btn_txt = "Activate";
+		}
+    }
+    public function changeNow() {
+        $sy = StudentSchoolYear::query()->update(['status' => 0]);
+        $scyear = StudentSchoolYear::where('id', $this->status_chosen_id)->first();
+        $systatus = 1;
+        if($scyear->status == 1 or $scyear->status == '1') { $systatus = 0; }
+        $scyear = StudentSchoolYear::where('id', $this->status_chosen_id)->update(['status' => $systatus]);
+        $this->resetInputs();
+        $this->emit('schoolyearStatusUpdated');
+    }
     public function addSemesterValue($value) {
         $this->chosen_id = $value;
     }

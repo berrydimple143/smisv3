@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Models\Section;
+use App\Models\Subject;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -48,5 +52,21 @@ class HelperController extends Controller
             $str = str_replace($arg_list[$i], "", $str);
         }
         return $str;
+    }
+    public static function getFieldValue($model, $field, $id) {
+        if($model == "Course") {
+            $singleModel = Course::find($id);
+        } else if($model == "Section") {
+            $singleModel = Section::find($id);
+        } else if($model == "Subject") {
+            $singleModel = Subject::find($id);
+        } else if($model == "User") {
+            $singleModel = User::find($id);
+        }
+        if($singleModel != null) {
+            return $singleModel->$field;
+        } else {
+            return '';
+        }
     }
 }

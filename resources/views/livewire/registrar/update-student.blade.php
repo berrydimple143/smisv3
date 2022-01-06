@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>          
+                <form wire:submit.prevent="submit">    
                     <div class="form-row  mb-3">
                         <div class="col-md-4 mb-3">
                             <label>Student Status {!! $requiredlbl !!}</label>
@@ -430,7 +430,7 @@
             </div>
             <div class="modal-footer">
                 <button wire:click="$emit('resetInputs')" type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>
-                <button wire:click.prevent="update" wire:loading.attr="disabled" type="button" class="btn btn-success px-4"><div wire:loading wire:target="update"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></div> Save changes</button>
+                <button class="btn btn-success close-modal px-4" wire:click.prevent="update" wire:loading.attr="disabled" @click="scrollTo({top: 0, behavior: 'smooth'})"><div wire:loading wire:target="update"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></div> Save changes</button>
             </div>
         </div>
     </div>

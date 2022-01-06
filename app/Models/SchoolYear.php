@@ -23,6 +23,7 @@ class SchoolYear extends Model
                 ->orWhere('description', 'like', '%'.$search.'%')
                 ->orWhere('start_date', 'like', '%'.$search.'%')
                 ->orWhere('end_date', 'like', '%'.$search.'%')
+                ->orWhere('status', 'like', '%'.$search.'%')
                 ->orWhere('created_at', 'like', '%'.$search.'%');
     }
 }
