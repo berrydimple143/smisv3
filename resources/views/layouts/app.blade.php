@@ -67,10 +67,11 @@
             @livewireScripts        
             <script type="text/javascript">   
                 document.addEventListener('livewire:load', function () {
-                    function showToastMessage(msg) {
+                    var url = "{{ config('app.url') }}"; 
+                    function showToastMessage(msg, icn) {
                         var toastMixin = Swal.mixin({
                             toast: true,
-                            icon: 'success',
+                            icon: icn,
                             title: 'General Title',
                             animation: false,
                             position: 'top-right',
@@ -88,7 +89,7 @@
                         });  
                     }
                     Livewire.on('classCreated', () => {
-                        showToastMessage("Class created successfully.");
+                        showToastMessage("Class created successfully.", 'success');
                     });
                     Livewire.on('userStore', csid => {
                         var myArray = csid.split("|@|");
@@ -96,7 +97,7 @@
                         var sid = myArray[1];
                         $('.modal-backdrop').remove();
                         swal("Done!", "Student record created successfully.", "success");
-                        window.location = "https://smisv2.altustechit.com/registrar/students?cid=" + cid + "&sid=" + sid;
+                        window.location = url + "registrar/students?cid=" + cid + "&sid=" + sid;
                     });
                     Livewire.on('studentUpdated', csid => {
                         var myArray = csid.split("|@|");
@@ -104,7 +105,7 @@
                         var sid = myArray[1];
                         $('.modal-backdrop').remove();
                         swal("Done!", "Student record updated successfully.", "success");
-                        window.location = "https://smisv2.altustechit.com/registrar/students?cid=" + cid + "&sid=" + sid;
+                        window.location = url + "registrar/students?cid=" + cid + "&sid=" + sid;
                     });
                     Livewire.on('studentDeleted', csid => {
                         var myArray = csid.split("|@|");
@@ -112,7 +113,7 @@
                         var sid = myArray[1];
                         $('.modal-backdrop').remove();
                         swal("Done!", "Student record deleted successfully.", "success");
-                        window.location = "https://smisv2.altustechit.com/registrar/students?cid=" + cid + "&sid=" + sid;
+                        window.location = url + "registrar/students?cid=" + cid + "&sid=" + sid;
                     });
                     Livewire.on('userStoreFailed', errmsg => {    
                         $('#addStudentModal').modal('hide');
@@ -231,12 +232,12 @@
                         Livewire.emit('checkCriteriaLimit', grcId);                          
                     });
                     Livewire.on('limitAvailable', percent => { 
-                        showToastMessage("You still have " + percent + "% remaining.");
+                        showToastMessage("You still have " + percent + "% remaining.", 'success');
                     });
                     Livewire.on('gradeCriteriaFailed', cid => {                    
                         $('.modal-backdrop').remove();
                         swal("Oooppsss!", "There was an error in the process.", "error");      
-                        window.location = "https://smisv2.altustechit.com/grading-criteria/grade-criteria/" + cid;         
+                        window.location = url + "grading-criteria/grade-criteria/" + cid;         
                     });
                     Livewire.on('gradeCriteriaLimit', () => {                 
                         $('.modal-backdrop').remove();
@@ -298,7 +299,7 @@
                     Livewire.on('sectionActivityFailed', sid => {             
                         $('.modal-backdrop').remove();
                         swal("Oooppsss!", "There was an error in the process.", "error");           
-                        window.location = "https://smisv2.altustechit.com/registrar/section-activities/" + sid;    
+                        window.location = url + "registrar/section-activities/" + sid;    
                     });
                     Livewire.on('sectionActivityDeleted', () => {                    
                         $('.modal-backdrop').remove();
@@ -398,7 +399,7 @@
                         $('.modal-backdrop').remove();
                         $('#deleteStudentSectionModal').modal('hide');
                         swal("Oooppsss!", "There was an error in the process.", "error");           
-                        window.location = "https://smisv2.altustechit.com/registrar/section-students/" + sid;   
+                        window.location = url + "registrar/section-students/" + sid;   
                     });
                     
                     Livewire.on('studentAlreadyExist', () => {                 
@@ -421,7 +422,7 @@
                         $('.modal-backdrop').remove();
                         $('#deleteSectionSubjectModal').modal('hide');
                         swal("Oooppsss!", "There was an error in the process.", "error");           
-                        window.location = "https://smisv2.altustechit.com/registrar/section-subjects/" + sid;   
+                        window.location = url + "registrar/section-subjects/" + sid;   
                     });
                     Livewire.on('sectionSubjectDeleted', () => {      
                         $('.modal-backdrop').remove();
@@ -501,13 +502,13 @@
                         Livewire.emit('addSemesterValue', val);
                     }); 
                     Livewire.on('schoolyearCreated', () => {
-                        showToastMessage("School year created successfully.");
+                        showToastMessage("School year created successfully.", 'success');
                     });
                     Livewire.on('schoolyearUpdated', () => {
-                        showToastMessage("School year updated successfully.");
+                        showToastMessage("School year updated successfully.", 'success');
                     });
                     Livewire.on('schoolyearDeleted', () => {
-                        showToastMessage("School year deleted successfully.");
+                        showToastMessage("School year deleted successfully.", 'success');
                     });
                     Livewire.on('schoolyearFailed', errmsg => {
                         swal("Oooppsss!", errmsg, "error");
@@ -527,7 +528,45 @@
                         swal("Oooppsss!", errmsg, "error");
                     });
                     Livewire.on('classDeleted', () => {
-                        showToastMessage("Class deleted successfully.");
+                        showToastMessage("Class deleted successfully.", 'success');
+                    });
+                    Livewire.on('classExist', () => {
+                        swal("Oooppsss!", "This class exist already.", "error");                             
+                    });
+                    Livewire.on('subjectCriteriaCreated', csid => {
+                        $('#addSubjectCriteriaModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        var myArray = csid.split("|@|");
+                        var cid = myArray[0];
+                        var sid = myArray[1];
+                        swal("Done!", "Subject criteria was added successfully.", "success"); 
+                        window.location = url + "faculty/subject-criteria?cid=" + cid + "&sid=" + sid;
+                    });
+                    Livewire.on('subjectCriteriaFailed', errmsg => {
+                        $('#addSubjectCriteriaModal').modal('hide');
+                        swal("Oooppsss!", errmsg, "error");
+                    });
+                    Livewire.on('subjectCriteriaDeleted', () => {
+                        $('#deleteSubjectCriteriaModal').modal('hide');
+                        showToastMessage("Subject criteria was deleted successfully.", 'success');
+                    });
+                    Livewire.on('subjectCriteriaExist', csid => {
+                        $('#addSubjectCriteriaModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        var myArray = csid.split("|@|");
+                        var cid = myArray[0];
+                        var sid = myArray[1];
+                        swal("Oooppsss!", "Subject criteria exist already.", "error"); 
+                        window.location = url + "faculty/subject-criteria?cid=" + cid + "&sid=" + sid;
+                    });
+                    Livewire.on('subjectCriteriaUpdated', csid => {
+                        $('#editSubjectCriteriaModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        var myArray = csid.split("|@|");
+                        var cid = myArray[0];
+                        var sid = myArray[1];
+                        swal("Done!", "Subject criteria was changed successfully.", "success");  
+                        window.location = url + "faculty/subject-criteria?cid=" + cid + "&sid=" + sid;
                     });
                 });
             </script>

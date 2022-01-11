@@ -26,7 +26,7 @@ class Classes extends Component
     public $search = '';
     public $orderBy = 'id';
     public $orderAsc = false;
-    public $selected_id, $deleteId;
+    public $deleteId;
     public $section_id, $subject_id, $teacher_id, $course_id, $school_year_id, $semester_id;
     public $listOfSubjects, $listOfSections, $listOfTeachers, $listOfSchoolYear, $listOfGradeLevel, $listOfSemester;
     
@@ -50,8 +50,7 @@ class Classes extends Component
        $this->course_id = '';
        $this->school_year_id = '';
        $this->semester_id = '';
-       $this->deleteId = '';   
-       $this->selected_id = '';
+       $this->deleteId = '';
     }
     public function render()
     {
@@ -83,24 +82,35 @@ class Classes extends Component
     }
     public function store() {
         $this->validate();
-        try {
-            $data = [
-                'section_id' => $this->section_id,
-                'subject_id' => $this->subject_id,
-                'teacher_id' => $this->teacher_id,
-                'course_id' => $this->course_id,
-                'school_year_id' => $this->school_year_id,
-                'semester_id' => $this->semester_id,
-            ];
-            DB::beginTransaction();            
-            $sy = SchoolClasses::create($data);
-            DB::commit();
+        if(SchoolClasses::where('section_id', $this->section_id)
+            ->where('subject_id', $this->subject_id)
+            ->where('teacher_id', $this->teacher_id)
+            ->where('course_id', $this->course_id)
+            ->where('school_year_id', $this->school_year_id)
+            ->where('semester_id', $this->semester_id)
+            ->count() <= 0) {
+            try {
+                $data = [
+                    'section_id' => $this->section_id,
+                    'subject_id' => $this->subject_id,
+                    'teacher_id' => $this->teacher_id,
+                    'course_id' => $this->course_id,
+                    'school_year_id' => $this->school_year_id,
+                    'semester_id' => $this->semester_id,
+                ];
+                DB::beginTransaction();            
+                $sy = SchoolClasses::create($data);
+                DB::commit();
+                $this->resetInputs();
+                $this->emit('classCreated');
+            } catch (Exception $e) {
+                DB::rollBack();
+                $this->emit('classFailed', $e->getMessage());
+                return $e->getMessage();
+            }
+        } else {
             $this->resetInputs();
-            $this->emit('classCreated');
-        } catch (Exception $e) {
-            DB::rollBack();
-            $this->emit('classFailed', $e->getMessage());
-            return $e->getMessage();
+            $this->emit('classExist');
         }
     }
     public function deleteThisId($id) {

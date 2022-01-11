@@ -12,6 +12,9 @@ class Criteria extends Model
 
     protected $fillable = [    
         'description',          
+        'status',
+        'active',
+        'percent',
     ];
 
     public static function search($search) {

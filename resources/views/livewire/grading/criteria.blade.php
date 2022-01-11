@@ -43,35 +43,39 @@
 			            <table class="table table-sm">
 			                <thead>
 			                <tr>		                    
-			                    <th style="color: white;" nowrap>Description</th>		
-			                    <th style="color: white;" nowrap>Status</th>		                    
-			                    <th style="width: 110px; color: white;" nowrap>Date Created</th>			                  
+			                    <th style="color: white;" nowrap>Description</th>	
+			                    <th style="width: 150px; text-align: center; color: white;" nowrap>Percentage</th>
+			                    <th style="width: 190px; color: white;" nowrap>Status</th>			                  
 			                    <th style="width: 150px; text-align: center; color: white;" nowrap>Action</th>
 			                </tr>
 			                </thead>
 			                <tbody>
 			                    @forelse($criteria as $criterium)			
-			                    <?php			       
-			                    	$status = "unused";             	
-		                    		$color = "success";
-		                    		if($criterium->status == "used") {		                    			
-		                    			$color = "danger";
-		                    			$status = "used";  
-		                    		} 
-		                    		$date = new Carbon\Carbon($criterium->created_at);
-		                    		$dc = $date->toFormattedDateString();
+			                    <?php
+		                    		$status = "Inactive";
+		                    		$status_class = "danger";
+		                    		if($criterium->active == 'yes') {
+		                    		    $status = "Active"; 
+		                    		    $status_class = "success";
+		                    		}
+		                    		$percent = "Not set";
+		                    		if(!empty($criterium->percent)) {
+		                    		    $percent = (string)$criterium->percent." %";
+		                    		}
 			                    ?>                    
 		                        <tr>				                        
 		                            <td>{{ $criterium->description }}</td>	
-		                            <td><span class="badge bg-{{ $color }}">{{ $status }}</span></td>   	                            
-		                            <td>{{ $dc }}</td>                          
+		                            <td style="text-align: center;">{{ $percent }}</td>
+		                            <td>
+		                                <button type="button" wire:click="$emit('changeStatus', {{ $criterium->id }})" class="btn btn-{{ $status_class }}" data-toggle="modal" data-target="#changeStatusModal">{{ $status }}</button>
+		                            </td>
 		                            <td>
 		                                <button type="button" wire:click="edit({{ $criterium->id }})" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editCriteriaModal"><i class="cil-pencil"></i>&nbsp;Edit</button>
 		                                <button type="button" wire:click="deleteThisId({{ $criterium->id }})" data-toggle="modal" data-target="#deleteCriteriaModal" class="btn btn-sm btn-danger"><i class="cil-trash"></i>&nbsp;Delete</button>	                                          				                                	
 		                            </td>
 		                        </tr>		
 		                        @empty
-		                        <tr><td>No criteria yet ...</td></tr>	                    			                        
+		                        <tr><td colspan="4">No criteria yet ...</td></tr>	                    			                        
 			                    @endforelse
 			                </tbody>
 			            </table>

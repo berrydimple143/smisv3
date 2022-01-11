@@ -66,8 +66,7 @@
         <li class="c-sidebar-nav-dropdown"><a class="c-sidebar-nav-dropdown-toggle" href="#">
             <i class="c-icon cil-voice-over-record c-sidebar-nav-icon"></i> Faculty Portal</a>
             <ul class="c-sidebar-nav-dropdown-items">
-                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('teachers') }}">Teachers</a></li>            
-                <!-- <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{config('app.url')}}facultyportal/grade-encoding">Grade Encoding</a></li>            -->
+                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('subject.criteria') }}">Subject Criteria</a></li>
             </ul>
         </li>
         @endhasanyrole
@@ -96,14 +95,19 @@
         <li class="c-sidebar-nav-dropdown"><a class="c-sidebar-nav-dropdown-toggle" a href="#">
             <i class="c-icon cil-people c-sidebar-nav-icon"></i> User Management</a>
             <ul class="c-sidebar-nav-dropdown-items">
-                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('users') }}">Users</a></li>
                 <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('roles') }}">Roles</a></li>
                 <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('permissions') }}">Permissions</a></li>
                 <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="#">Departments</a></li>
                 <li class="c-sidebar-nav-dropdown"><a class="c-sidebar-nav-dropdown-toggle" a href="#">
-                    <i class="c-icon cil-people c-sidebar-nav-icon"></i> Employees</a>
+                    <i class="c-icon cil-people c-sidebar-nav-icon"></i> Users</a>
                     <ul class="c-sidebar-nav-dropdown-items">
-                        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('users') }}">Manage Employees</a></li>
+                        <li class="c-sidebar-nav-dropdown"><a class="c-sidebar-nav-dropdown-toggle" href="#">
+                            <i class="c-icon cil-contact c-sidebar-nav-icon"></i> Manage Users</a>
+                            <ul class="c-sidebar-nav-dropdown-items">
+                                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('teachers') }}">Teachers</a></li>
+                                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('teachers') }}">Faculties</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             </ul>

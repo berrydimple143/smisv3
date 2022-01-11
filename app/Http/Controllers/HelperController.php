@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Section;
 use App\Models\Subject;
+use App\Models\Criteria;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -62,6 +63,8 @@ class HelperController extends Controller
             $singleModel = Subject::find($id);
         } else if($model == "User") {
             $singleModel = User::find($id);
+        } else if($model == "Criteria") {
+            $singleModel = Criteria::find($id);
         }
         if($singleModel != null) {
             return $singleModel->$field;
