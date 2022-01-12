@@ -21,6 +21,7 @@ use App\Http\Livewire\Registrar\Section;
 use App\Http\Livewire\Registrar\Student;
 use App\Http\Livewire\Faculty\Teacher;
 use App\Http\Livewire\Faculty\SubjectCriteria;
+use App\Http\Livewire\Faculty\ClassRecord;
 use App\Http\Livewire\UserManagement\User;
 use App\Http\Livewire\UserManagement\Role;
 use App\Http\Livewire\UserManagement\Permission;
@@ -59,6 +60,7 @@ Route::middleware('auth')->group(function () {
 	Route::prefix('faculty')->group(function() {
 		Route::get('teachers', Teacher::class)->name('teachers');
 		Route::get('subject-criteria', SubjectCriteria::class)->name('subject.criteria');
+		Route::get('class-record', ClassRecord::class)->name('class.record');
 	});
 	Route::prefix('user-management')->group(function() {
 		Route::get('users', User::class)->name('users');

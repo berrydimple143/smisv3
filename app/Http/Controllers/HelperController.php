@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Section;
 use App\Models\Subject;
 use App\Models\Criteria;
+use App\Models\Classes;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -65,6 +66,8 @@ class HelperController extends Controller
             $singleModel = User::find($id);
         } else if($model == "Criteria") {
             $singleModel = Criteria::find($id);
+        } else if($model == "Classes") {
+            $singleModel = Classes::find($id);
         }
         if($singleModel != null) {
             return $singleModel->$field;

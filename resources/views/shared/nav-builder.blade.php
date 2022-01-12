@@ -67,6 +67,7 @@
             <i class="c-icon cil-voice-over-record c-sidebar-nav-icon"></i> Faculty Portal</a>
             <ul class="c-sidebar-nav-dropdown-items">
                 <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('subject.criteria') }}">Subject Criteria</a></li>
+                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link sub-nav" href="{{ route('class.record') }}">Class Record</a></li>
             </ul>
         </li>
         @endhasanyrole
