@@ -67,7 +67,8 @@
 		                            <td>{{ $criterium->description }}</td>	
 		                            <td style="text-align: center;">{{ $percent }}</td>
 		                            <td>
-		                                <button type="button" wire:click="$emit('changeStatus', {{ $criterium->id }})" class="btn btn-{{ $status_class }}" data-toggle="modal" data-target="#changeStatusModal">{{ $status }}</button>
+		                                <span class="badge bg-{{ $status_class }}">{{ $status }}</span>
+		                                <!--<button type="button" wire:click="$emit('changeCriteriaStatus', {{ $criterium->id }})" class="btn btn-{{ $status_class }}" data-toggle="modal" data-target="#changeCriteriaStatusModal">{{ $status }}</button>-->
 		                            </td>
 		                            <td>
 		                                <button type="button" wire:click="edit({{ $criterium->id }})" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editCriteriaModal"><i class="cil-pencil"></i>&nbsp;Edit</button>
@@ -81,7 +82,24 @@
 			            </table>
 			            {!! $criteria->links() !!}
 			        </div>					        
-			        
+			        <div wire:ignore.self class="modal fade" id="changeCriteriaStatusModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+			            <div class="modal-dialog" role="document">
+			                <div class="modal-content">
+			                    <div class="modal-header">
+			                        <h5 class="modal-title" id="deleteModalLabel">Change Status</h5>
+			                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                            <span aria-hidden="true close-btn">×</span>
+			                        </button>
+			                    </div>
+			                    <div class="modal-body">
+			                        <p>{{ $stat_modal_content }}</p>
+			                    </div>
+			                    <div class="modal-footer">
+			                        <button type="button" wire:click.prevent="changeNow" class="btn btn-{{ $stat_btn_style }}" data-dismiss="modal">{{ $stat_btn_txt }}</button>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
 			        <div wire:ignore.self class="modal fade" id="deleteCriteriaModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
 			            <div class="modal-dialog" role="document">
 			                <div class="modal-content">

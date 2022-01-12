@@ -42,6 +42,7 @@
 			            <table class="table table-sm">
 			                <thead>
 			                <tr>		                    
+			                    <th style="width: 150px; color: white;" nowrap>Code</th>
 			                    <th style="color: white;" nowrap>Description</th>
 			                    <th style="color: white;" nowrap>Criteria</th>	
 			                    <th style="color: white;" nowrap>Grade Level</th>			  
@@ -52,6 +53,7 @@
 			                <tbody>
 			                    @forelse($criteria as $criterium)
 			                    <tr>
+			                        <td>{{ $criterium->code }}</td>
 		                            <td>{{ $criterium->description }}</td>
 		                            <td>{{ App\Http\Controllers\HelperController::getFieldValue('Criteria', 'description', $criterium->criteria_id) }}</td>	
 		                            <td>{{ App\Http\Controllers\HelperController::getFieldValue('Course', 'name', $criterium->course_id) }}</td>	                 
@@ -62,7 +64,7 @@
 		                            </td>
 		                        </tr>		
 		                        @empty
-		                            <tr><td colspan="5">No subject criteria yet ...</td></tr>
+		                            <tr><td colspan="6">No subject criteria yet ...</td></tr>
 			                    @endforelse
 			                </tbody>
 			            </table>

@@ -18,14 +18,16 @@ class Criteria extends Component
     public $search = '';
     public $orderBy = 'description';
     public $orderAsc = true;
-    public $selected_id, $deleteId;
-    public $description;
+    public $selected_id, $deleteId, $status_chosen_id;
+    public $description, $percent, $active;
+    public $stat_modal_content = "The status is inactive at the moment. Please activate using the button below:";
+    public $stat_btn_txt = "Activate", $stat_btn_style = "success";
 
-    protected $listeners = ['resetAllInputs' => 'resetInputs'];
+    protected $listeners = ['resetInputs', 'changeCriteriaStatus'];
 
     protected function rules() {
         return [
-            'description' => ['required'],                
+            'description' => ['required'],
         ];
     }
 
@@ -57,35 +59,80 @@ class Criteria extends Component
             }
         }
     }
+    
+    public function changeCriteriaStatus($id) {
+        $this->status_chosen_id = $id;
+        $grcr = GradeCriteria::where('id', $id)->first();
+        if($grcr->active == 'yes') {
+		    $this->stat_modal_content = "The status is already active. If you want to de-activate it, please click the button below:";
+            $this->stat_btn_style = "danger";
+            $this->stat_btn_txt = "De-activate";
+		} else {
+		    $this->stat_modal_content = "The status is inactive at the moment. Please activate using the button below:";
+            $this->stat_btn_style = "success";
+            $this->stat_btn_txt = "Activate";
+		}
+    }
+    public function changeNow() {
+        $grcr = GradeCriteria::where('id', $this->status_chosen_id)->first();
+        $systatus = 'yes';
+        if($grcr->active == 'yes') { $systatus = 'no'; }
+        $grcr = GradeCriteria::where('id', $this->status_chosen_id)->update(['active' => $systatus]);
+        $this->resetInputs();
+        $this->emit('criteriaStatusUpdated');
+    }
 
     public function edit($id)
     {   
         $criteria = GradeCriteria::where('id', $id)->first();
         $this->selected_id = $id;
-        $this->description = $criteria->description;        
+        $this->description = $criteria->description;   
+        $this->active = $criteria->active;   
+        $this->percent = $criteria->percent;   
     }
 
     public function update()
     {
-        $this->validate();
-        if($this->selected_id) {
-            $act = GradeCriteria::find($this->selected_id);
-            try {
-                DB::beginTransaction();
-                $act->update([
-                    'description' => $this->description,                                     
-                ]);         
-                DB::commit();
-                $this->resetInputs();
-                $this->emit('criteriaUpdated');
-            } catch (Exception $e) {
-                DB::rollBack();
-                $this->emit('criteriaFailed', $e->getMessage());
-                return $e->getMessage();
+        $this->validate([
+            'description' => ['required', 'string'],
+            'percent' => ['required', 'integer'],
+            'active' => ['required'],
+        ]);
+        if($this->checkLimit($this->percent, $this->active, $this->selected_id) == "ok") {
+            if($this->selected_id) {
+                $act = GradeCriteria::find($this->selected_id);
+                try {
+                    DB::beginTransaction();
+                    $act->update([
+                        'description' => $this->description,
+                        'percent' => $this->percent,
+                        'active' => $this->active,
+                    ]);         
+                    DB::commit();
+                    $this->resetInputs();
+                    $this->emit('criteriaUpdated');
+                } catch (Exception $e) {
+                    DB::rollBack();
+                    $this->emit('criteriaFailed', $e->getMessage());
+                    return $e->getMessage();
+                }
             }
+        } else {
+            $this->resetInputs();
+            $this->emit('percentExceeded');
         }
     }
-
+    private function checkLimit($percent, $active, $id) {
+        $limit = "ok";
+        if($active == "yes") {
+            $cntr = GradeCriteria::where('id', '!=', $id)->sum('percent');
+            $total = (int)$percent + $cntr;
+            if($total > 100) {
+                $limit = "exceeded";
+            }
+        }
+        return $limit;
+    }
     public function deleteThisId($id)
     {
         $this->deleteId = $id;
@@ -108,6 +155,7 @@ class Criteria extends Component
     public function resetInputs()
     {
        $this->description = '';
+       $this->percent = '';
        $this->selected_id = '';
        $this->deleteId = '';       
     }

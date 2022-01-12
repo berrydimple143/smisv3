@@ -8,7 +8,6 @@
                 </button>
             </div>
             <div class="modal-body">
-
                 <form>                            
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
@@ -17,12 +16,29 @@
                             @error('description') <span class="invalid-feedback">{{ $message }}</span>@enderror
                         </div>                                     
                     </div>
+                    <div class="form-row">
+                        <div class="col-md-12 mb-3">
+                            <label>Percentage</label>
+                            <input wire:model.lazy="percent" type="text" class="form-control @if($errors->has('percent')) is-invalid @endif" required>
+                            @error('percent') <span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>                                     
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12 mb-3">
+                            <label>Active</label>
+                            <select wire:model.lazy="active" class="form-control @if($errors->has('active')) is-invalid @endif" required>
+                                <option value="">Select status here ...</option>
+			                    <option value="no">No</option>
+			                    <option value="yes">Yes</option>
+			                </select>
+                            @error('active') <span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>                                     
+                    </div>
                 </form>
-
             </div>
             <div class="modal-footer">
-                <button wire:click="$emit('resetAllInputs')" type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>
-                <button wire:click.prevent="update" wire:loading.attr="disabled" type="button" class="btn btn-success px-4" data-dismiss="modal"><div wire:loading wire:target="update"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></div> Save changes</button>
+                <button wire:click="$emit('resetInputs')" type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>
+                <button class="btn btn-success close-modal px-4" wire:click.prevent="update" wire:loading.attr="disabled" @click="scrollTo({top: 0, behavior: 'smooth'})"><div wire:loading wire:target="update"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></div> Save changes</button>
             </div>
         </div>
     </div>

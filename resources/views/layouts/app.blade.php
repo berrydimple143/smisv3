@@ -181,7 +181,8 @@
     
                     Livewire.on('criteriaCreated', () => {                 
                         $('.modal-backdrop').remove();
-                        swal("Done!", "Criteria created successfully.", "success");                             
+                        swal("Done!", "Criteria created successfully.", "success");  
+                        window.location = "{{ route('criteria') }}";
                     });
                     Livewire.on('criteriaUpdated', () => {            
                         $('.modal-backdrop').remove();
@@ -567,6 +568,15 @@
                         var sid = myArray[1];
                         swal("Done!", "Subject criteria was changed successfully.", "success");  
                         window.location = url + "faculty/subject-criteria?cid=" + cid + "&sid=" + sid;
+                    });
+                    Livewire.on('criteriaStatusUpdated', () => {
+                        $('.modal-backdrop').remove();
+                        swal("Great!", "Criteria status was changed successfully.", "success");                    
+                    });
+                    Livewire.on('percentExceeded', () => {  
+                        $('.modal-backdrop').remove();
+                        swal("Oooppsss!", "Criteria percentage limit exceeded.", "error");       
+                        window.location = "{{ route('criteria') }}";
                     });
                 });
             </script>

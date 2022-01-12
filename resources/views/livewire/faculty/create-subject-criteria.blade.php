@@ -13,6 +13,13 @@
                     <input wire:model="subject_id" type="hidden" value="{{ $subject_id }}">
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
+                            <label>Code:</label>
+                            <input wire:model.lazy="code" type="text" class="form-control @if($errors->has('code')) is-invalid @endif" required>
+                            @error('code') <span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>                        
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12 mb-3">
                             <label>Description:</label>
                             <input wire:model.lazy="description" type="text" class="form-control @if($errors->has('description')) is-invalid @endif" required>
                             @error('description') <span class="invalid-feedback">{{ $message }}</span>@enderror

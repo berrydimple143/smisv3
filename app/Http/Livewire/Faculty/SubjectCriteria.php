@@ -24,7 +24,7 @@ class SubjectCriteria extends Component
     public $orderBy = 'id';
     public $orderAsc = false;
     public $selected_id, $deleteId;
-    public $description, $criteria_id, $subject_id, $course_id;
+    public $code, $description, $criteria_id, $subject_id, $course_id;
     public $listOfGradeLevel, $listOfSubjects, $listOfCriteria;
     public $addBtnClass = "disabled", $addBtnStyle = "default";
 
@@ -32,6 +32,7 @@ class SubjectCriteria extends Component
 
     protected function rules() {
         return [
+            'code' => ['required'],
             'description' => ['required'],
             'criteria_id' => ['required'],       
             'subject_id' => ['required'],
@@ -50,6 +51,7 @@ class SubjectCriteria extends Component
 
     public function resetInputs()
     {
+       $this->code = '';
        $this->description = '';
        $this->criteria_id = ''; 
        $this->selected_id = '';   
@@ -65,7 +67,7 @@ class SubjectCriteria extends Component
             $course = Course::where('id', $this->course_id)->first();
             $subject = Subject::where('id', $this->subject_id)->first();
         }
-        $this->listOfCriteria = Criteria::all();
+        $this->listOfCriteria = Criteria::where('active', 'yes')->get();
         $classification = Classification::where('description', 'Basic Education')->first();
         $this->listOfSubjects = Subject::where('classification_id', $classification->id)->orderBy('description')->get();
         $this->listOfGradeLevel = Course::where('classification_id', $classification->id)->orderBy('name')->get();
@@ -84,9 +86,11 @@ class SubjectCriteria extends Component
         if(StudentSubjectCriteria::where('course_id', $this->course_id)
             ->where('subject_id', $this->subject_id)
             ->where('criteria_id', $this->criteria_id)
+            ->where('code', $this->code)
             ->where('description', $this->description)->count() <= 0) {
             try {
                 $data = [
+                    'code' => $this->code,
                     'description' => $this->description,
                     'criteria_id' => $this->criteria_id,  
                     'subject_id' => $this->subject_id,
@@ -112,6 +116,7 @@ class SubjectCriteria extends Component
     {   
         $activity = StudentSubjectCriteria::where('id',$id)->first();
         $this->selected_id = $id;
+        $this->code = $activity->code;
         $this->description = $activity->description;
         $this->criteria_id = $activity->criteria_id;   
         $this->course_id = $activity->course_id;
@@ -121,8 +126,8 @@ class SubjectCriteria extends Component
     public function update()
     {
         $this->validate([
+            'code' => ['required'],
             'description' => ['required'],
-            'criteria_id' => ['required'],
         ]);
         $csid = $this->course_id . '|@|' . $this->subject_id;
         if($this->selected_id) {
@@ -130,8 +135,8 @@ class SubjectCriteria extends Component
             try {
                 DB::beginTransaction();
                 $act->update([
-                    'description' => $this->description,
-                    'criteria_id' => $this->criteria_id,                    
+                    'code' => $this->code,
+                    'description' => $this->description,                 
                 ]);         
                 DB::commit();
                 $this->resetInputs();
