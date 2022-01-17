@@ -17,7 +17,13 @@ class ClassRecord extends Model
         'course_id',
         'section_id',        
         'teacher_id',
+        'student_id',
         'subject_id',
+        'criteria_id',
+        'subject_criteria_id',
+        'activity_name',
+        'item',
+        'score',
     ];
 
     public static function search($search) {

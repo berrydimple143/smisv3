@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Admission\OnlineRegistration;
 use App\Http\Livewire\Admission\Registration;
 use App\Http\Livewire\Grading\SummativeAssessment;
-use App\Http\Livewire\Grading\PerformanceTask;
+//use App\Http\Livewire\Grading\PerformanceTask;
 use App\Http\Livewire\Grading\Criteria;
 use App\Http\Livewire\Grading\GradingSystem;
 use App\Http\Livewire\Grading\GradeCriteria;
@@ -22,6 +22,9 @@ use App\Http\Livewire\Registrar\Student;
 use App\Http\Livewire\Faculty\Teacher;
 use App\Http\Livewire\Faculty\SubjectCriteria;
 use App\Http\Livewire\Faculty\ClassRecord;
+use App\Http\Livewire\Faculty\PerformanceTask;
+use App\Http\Livewire\Faculty\WrittenWork;
+use App\Http\Livewire\Faculty\ViewStudentGrade;
 use App\Http\Livewire\UserManagement\User;
 use App\Http\Livewire\UserManagement\Role;
 use App\Http\Livewire\UserManagement\Permission;
@@ -38,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/change-password', Password::class)->name('change.password');
 	Route::prefix('grading-criteria')->group(function() {
 		Route::get('summative-assessment', SummativeAssessment::class)->name('summative.assessment');
-		Route::get('performance-task', PerformanceTask::class)->name('performance.task');	
+		//Route::get('performance-task', PerformanceTask::class)->name('performance.task');	
       	Route::get('criteria', Criteria::class)->name('criteria'); 
       	Route::get('grading-system', GradingSystem::class)->name('grading.system'); 
       	Route::get('grade-criteria/{id}', GradeCriteria::class)->name('grade.criteria'); 
@@ -61,6 +64,9 @@ Route::middleware('auth')->group(function () {
 		Route::get('teachers', Teacher::class)->name('teachers');
 		Route::get('subject-criteria', SubjectCriteria::class)->name('subject.criteria');
 		Route::get('class-record', ClassRecord::class)->name('class.record');
+		Route::get('written-works', WrittenWork::class)->name('written.work');
+		Route::get('performance-tasks', PerformanceTask::class)->name('performance.task');
+		Route::get('view-student-grades/{section_id}/{subject_id}/{student_id}/{teacher_id}/{course_id}/{school_year_id}/{semester_id}/{criteria_id}/{subject_criteria_id}', ViewStudentGrade::class)->name('view.student.grades');
 	});
 	Route::prefix('user-management')->group(function() {
 		Route::get('users', User::class)->name('users');

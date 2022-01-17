@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Section;
 use App\Models\Subject;
 use App\Models\Criteria;
+use App\Models\StudentRecord;
 use App\Models\Classes;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -55,6 +56,15 @@ class HelperController extends Controller
         }
         return $str;
     }
+    public static function getTotal($scores) {
+        $total = 0;
+        $cntr = 0;
+        foreach($scores as $score) {
+            $total += (($score->score/$score->item) * 50) + 50;
+            $cntr++;
+        }
+        return $total/$cntr;
+    }
     public static function getFieldValue($model, $field, $id) {
         if($model == "Course") {
             $singleModel = Course::find($id);
@@ -68,6 +78,8 @@ class HelperController extends Controller
             $singleModel = Criteria::find($id);
         } else if($model == "Classes") {
             $singleModel = Classes::find($id);
+        } else if($model == "StudentRecord") {
+            $singleModel = StudentRecord::find($id);
         }
         if($singleModel != null) {
             return $singleModel->$field;

@@ -20,6 +20,7 @@ use App\Models\Assessment;
 use Livewire\WithPagination;
 use DB;
 use Exception;
+use Illuminate\Http\Request;
 
 class ClassRecord extends Component
 {
@@ -28,11 +29,12 @@ class ClassRecord extends Component
 
     public $perPage = 10;
     public $search = '';
-    public $orderBy = 'id';
-    public $orderAsc = false;
+    public $orderBy = 'last_name';
+    public $orderAsc = true;
     public $deleteId;
     public $section_id = '', $quarter_id, $subject_id, $teacher_id, $course_id = '', $school_year_id, $semester_id;
     public $listOfSubjects, $listOfSections, $listOfTeachers, $listOfSchoolYear, $listOfGradeLevel, $listOfSemester, $listOfCriteria;
+    public $showButton = false;
     
     protected $listeners = ['resetInputs'];
     
@@ -56,18 +58,31 @@ class ClassRecord extends Component
        $this->semester_id = '';
        $this->deleteId = '';
     }
+    
+    public function mount(Request $request) {
+        $this->section_id = $request->section_id;
+        $this->subject_id = $request->subject_id;
+        $this->teacher_id = $request->teacher_id;
+        $this->course_id = $request->course_id;
+        $this->school_year_id = $request->school_year_id;
+        $this->semester_id = $request->semester_id;
+        if((empty($this->course_id)) and (empty($this->section_id))) {
+            $this->course_id = '';
+            $this->section_id = '';
+        }
+    }
+    
     public function render()
     {
         $scyear = SchoolYear::where('status', 1)->first();
         $this->school_year_id = $scyear->id;
         $classification = Classification::where('description', 'Basic Education')->first();
-        $this->listOfSubjects = Subject::where('classification_id', $classification->id)->orderBy('description')->get();
         $courseIds = [];
         $this->listOfGradeLevel = Course::where('classification_id', $classification->id)->orderBy('name')->get();
         foreach($this->listOfGradeLevel as $level) {
             $courseIds[] = $level->id;
         }
-        $this->listOfCriteria = Criteria::where('active', 'yes')->orderBy('id')->get();
+        $this->listOfCriteria = Criteria::where('active', 'yes')->orderBy('id', 'desc')->get();
         $this->listOfSections = Section::whereIn('course_id', $courseIds)->orderBy('name')->get();
         $this->listOfSchoolYear = SchoolYear::orderBy('created_at', 'desc')->get();
         $this->listOfSemester = Semester::where('school_year_id', $this->school_year_id)->orderBy('created_at', 'desc')->get();
@@ -81,53 +96,27 @@ class ClassRecord extends Component
         }
         if((!empty($this->course_id)) and (!empty($this->section_id))) {
             $cls = Classes::where('course_id', $this->course_id)->where('section_id', $this->section_id)->first();
-            $this->teacher_id = $cls->teacher_id;
+            if($cls) {
+                $this->teacher_id = $cls->teacher_id;
+                $subjectIds = [];
+                $subjects = Classes::where('course_id', $this->course_id)->where('section_id', $this->section_id)->where('teacher_id', $this->teacher_id)->get();     
+                foreach($subjects as $subj) {
+                    $subjectIds[] = $subj->subject_id;
+                }                
+                $sbjs = Subject::whereIn('id', $subjectIds)->orderBy('description')->get();
+                $this->listOfSubjects = $sbjs;
+                if($sbjs->count() == 1) {
+                    $this->subject_id = $subjectIds[0];
+                } 
+            }            
         } 
+        if((!empty($this->course_id)) and (!empty($this->section_id)) and (!empty($this->teacher_id)) and (!empty($this->subject_id))) {
+            $this->showButton = true;
+        }
     	return view('livewire.faculty.class-record', [
             'students' => StudentRecord::where('course_id', $this->course_id)->where('section_id', $this->section_id)
             ->orderBy($this->orderBy, $this->orderAsc ? 'asc' : 'desc')
             ->paginate($this->perPage),
         ])->extends('layouts.app');
-    }
-    public function store() {
-        $this->validate();
-        if(SchoolClassRecord::where('section_id', $this->section_id)
-            ->where('subject_id', $this->subject_id)
-            ->where('teacher_id', $this->teacher_id)
-            ->where('course_id', $this->course_id)
-            ->where('school_year_id', $this->school_year_id)
-            ->where('semester_id', $this->semester_id)
-            ->count() <= 0) {
-            try {
-                $data = [
-                    'section_id' => $this->section_id,
-                    'subject_id' => $this->subject_id,
-                    'teacher_id' => $this->teacher_id,
-                    'course_id' => $this->course_id,
-                    'school_year_id' => $this->school_year_id,
-                    'semester_id' => $this->semester_id,
-                ];
-                DB::beginTransaction();            
-                $sy = SchoolClassRecord::create($data);
-                DB::commit();
-                $this->resetInputs();
-                $this->emit('classCreated');
-            } catch (Exception $e) {
-                DB::rollBack();
-                $this->emit('classFailed', $e->getMessage());
-                return $e->getMessage();
-            }
-        } else {
-            $this->resetInputs();
-            $this->emit('classExist');
-        }
-    }
-    public function deleteThisId($id) {
-        $this->deleteId = $id;
-    }
-    public function deleteNow() {
-        $sc = SchoolClassRecord::where('id', $this->deleteId)->delete();
-        $this->resetInputs();
-        $this->emit('classDeleted');
     }
 }

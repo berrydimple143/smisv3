@@ -25,10 +25,6 @@
                                 </select>
                                 @error('semester_id') <span class="invalid-feedback">{{ $message }}</span>@enderror
     			            </div>
-    			            <div class="col-3">&nbsp;</div>
-    			            <div class="col-3">
-    			                <button wire:click.prevent="store" wire:loading.attr="disabled" type="button" class="btn btn-success pull-right"><div wire:loading wire:target="store"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></div><i class="cil-pencil"></i>&nbsp;Add</button>
-    			            </div>
     			        </div>
     			        <div class="row mb-3">
     			            <div class="col-3">
@@ -57,9 +53,11 @@
     			                Teacher:
     			                <select wire:model.lazy="teacher_id" name="teacher" class="form-control @if($errors->has('teacher_id')) is-invalid @endif" required>
     			                    <option value="">Select teacher here</option>
-    			                    @foreach($listOfTeachers as $teacher)
-    			                        <option value="{{ $teacher->id }}">{{ $teacher->first_name." ".$teacher->last_name }}</option>
-    			                    @endforeach
+    			                    @if(!empty($listOfTeachers))
+        			                    @foreach($listOfTeachers as $teacher)
+        			                        <option value="{{ $teacher->id }}">{{ $teacher->first_name." ".$teacher->last_name }}</option>
+        			                    @endforeach
+    			                    @endif
                                 </select>
                                 @error('teacher_id') <span class="invalid-feedback">{{ $message }}</span>@enderror
     			            </div>
@@ -67,9 +65,11 @@
     			                Subject Name:
     			                <select wire:model.lazy="subject_id" name="subject" class="form-control @if($errors->has('subject_id')) is-invalid @endif" required>
     			                    <option value="">Select subject here</option>
-    			                    @foreach($listOfSubjects as $subject)
-    			                        <option value="{{ $subject->id }}">{{ $subject->description }}</option>
-    			                    @endforeach
+    			                    @if(!empty($listOfSubjects))
+        			                    @foreach($listOfSubjects as $subject)
+        			                        <option value="{{ $subject->id }}">{{ $subject->description }}</option>
+        			                    @endforeach
+    			                    @endif
                                 </select>
                                 @error('subject_id') <span class="invalid-feedback">{{ $message }}</span>@enderror
     			            </div>
@@ -83,7 +83,7 @@
     			                	@foreach($listOfCriteria as $criterium)
     			                	    <th style="color: white;" nowrap>{{ $criterium->description }} ({{ $criterium->percent }}%)</th>
     			                	@endforeach
-    			                    <th style="text-align: center; width: 90px; color: white;" nowrap>Action</th>
+    			                    <th style="text-align: center; width: 400px; color: white;" nowrap>Action</th>
     			                </tr>
 			                </thead>
 			                <tbody>
@@ -92,8 +92,30 @@
     		                        	<td>{{ $student->last_name }}, {{ $student->first_name }}</td>                        
     		                            <td></td>
     		                            <td></td>
-    		                            <td>
-                                            <button type="button" wire:click="deleteThisId({{ $student->id }})" class="btn btn-danger" data-toggle="modal" data-target="#deleteClassModal"><i class="cil-trash"></i>&nbsp;Delete</button>
+    		                            <td style="text-align: right;">
+                                            <?php $stl = "primary"; ?>
+                                            @if($showButton)
+                                                @foreach($listOfCriteria as $criterium)
+                                                    <?php
+                                                        $url = "performance.task";
+                                                        $data = [
+                                                            'school_year_id' => $school_year_id,
+                                                            'semester_id' => $semester_id,
+                                                            'subject_id' => $subject_id,
+                                                            'course_id' => $course_id,
+                                                            'section_id' => $section_id,
+                                                            'teacher_id' => $teacher_id,
+                                                            'student_id' => $student->id,
+                                                            'criteria_id' => $criterium->id
+                                                        ];
+                                                        if($criterium->description == "Written Work") {
+                                                            $url = "written.work";
+                                                        }
+                                                    ?>
+                                                    <a href="{{ route($url, $data) }}"><button type="button" class="btn btn-sm btn-{{ $stl }}"><i class="cil-pencil"></i>&nbsp;{{ $criterium->description }} Grades</button>&nbsp;
+                                                    <?php $stl = "info"; ?>
+                                                @endforeach
+                                            @endif
     		                            </td>
     		                        </tr>
     		                    @empty
