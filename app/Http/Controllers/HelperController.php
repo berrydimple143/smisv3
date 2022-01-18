@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Section;
 use App\Models\Subject;
+use App\Models\SubjectCriteria;
 use App\Models\Criteria;
 use App\Models\StudentRecord;
 use App\Models\Classes;
@@ -59,11 +60,15 @@ class HelperController extends Controller
     public static function getTotal($scores) {
         $total = 0;
         $cntr = 0;
-        foreach($scores as $score) {
-            $total += (($score->score/$score->item) * 50) + 50;
-            $cntr++;
+        if($scores->count() > 0) {
+            foreach($scores as $score) {
+                $total += (($score->score/$score->item) * 50) + 50;
+                $cntr++;
+            }
+            return $total/$cntr;
+        } else {
+            return 0;
         }
-        return $total/$cntr;
     }
     public static function getFieldValue($model, $field, $id) {
         if($model == "Course") {
@@ -80,6 +85,8 @@ class HelperController extends Controller
             $singleModel = Classes::find($id);
         } else if($model == "StudentRecord") {
             $singleModel = StudentRecord::find($id);
+        } else if($model == "SubjectCriteria") {
+            $singleModel = SubjectCriteria::find($id);
         }
         if($singleModel != null) {
             return $singleModel->$field;

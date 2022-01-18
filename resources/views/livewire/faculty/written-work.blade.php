@@ -5,9 +5,11 @@
             <div class="card card-accent-success">	
 			    <div class="card-header">List of Written Work Grades for "{{ App\Http\Controllers\HelperController::getFieldValue('StudentRecord', 'first_name', $student_id) }} {{ App\Http\Controllers\HelperController::getFieldValue('StudentRecord', 'last_name', $student_id) }}"
 			        <div class="card-header-actions">
-			            <a class="card-header-action btn-setting" href="{{ config('app.url') }}faculty/class-record?school_year_id={{ $school_year_id }}&semester_id={{ $semester_id }}&course_id={{ $course_id }}&section_id={{ $section_id }}&teacher_id={{ $teacher_id }}&subject_id={{ $subject_id }}">
-			                << Back to class record
-			            </a>
+			            <font size="3">
+    			            <a class="card-header-action btn-setting" href="{{ config('app.url') }}faculty/class-record?school_year_id={{ $school_year_id }}&semester_id={{ $semester_id }}&course_id={{ $course_id }}&section_id={{ $section_id }}&teacher_id={{ $teacher_id }}&subject_id={{ $subject_id }}">
+    			                << Back to class record
+    			            </a>
+			            </font>
 			        </div>
 			    </div>	
 			    <div class="card-body">

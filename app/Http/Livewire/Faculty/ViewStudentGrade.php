@@ -2,14 +2,18 @@
 
 namespace App\Http\Livewire\Faculty;
 
+use App\Http\Controllers\HelperController;
+
 use App\Models\Subject;
 use App\Models\Section;
 use App\Models\StudentRecord;
 use App\Models\SubjectCriteria;
+use App\Models\Criteria;
 use App\Models\ClassRecord;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Str;
 use DB;
 use Exception;
 
@@ -57,11 +61,24 @@ class ViewStudentGrade extends Component
     }
     public function render()
     {
+        $criteria = Criteria::find($this->criteria_id);
+        $page = "performance-tasks";
+        $back_text = "Back to performance tasks";
+        $subject_desc = HelperController::getFieldValue("Subject", "description", $this->subject_id);
+        $student_fname = HelperController::getFieldValue("StudentRecord", "first_name", $this->student_id);
+        $student_lname = HelperController::getFieldValue("StudentRecord", "last_name", $this->student_id);
+        $section_name = HelperController::getFieldValue("Section", "name", $this->section_id);
+        $criteria_description = HelperController::getFieldValue("SubjectCriteria", "description", $this->subject_criteria_id);
+        $table_title = "List of grades for ". $subject_desc ." subject of ". $student_fname. " ". $student_lname. " in section ". $section_name ." for ". $criteria_description;
+        if(Str::contains($criteria->description, "Written")) {
+            $page = "written-works";
+            $back_text = "Back to written works";
+        }
+        $route_link = config('app.url'). "faculty/".$page."?school_year_id=".$this->school_year_id."&semester_id=".$this->semester_id."&course_id=".$this->course_id."&section_id=".$this->section_id."&teacher_id=".$this->teacher_id."&subject_id=".$this->subject_id."&student_id=".$this->student_id."&criteria_id=".$this->criteria_id;
         return view('livewire.faculty.view-student-grade', [
-            'subject' => Subject::where('id', $this->subject_id)->first(),
-            'section' => Section::where('id', $this->section_id)->first(),
-            'student' => StudentRecord::where('id', $this->student_id)->first(),
-            'activity' => SubjectCriteria::where('id', $this->subject_criteria_id)->first(),
+            'route_link' => $route_link,
+            'back_text' => $back_text,
+            'table_title' => $table_title,
             'activityGrades' => ClassRecord::where('course_id', $this->course_id)
                 ->where('section_id', $this->section_id)
                 ->where('subject_id', $this->subject_id)

@@ -38,6 +38,8 @@ class WrittenWork extends Component
     public function resetInputs()
     {
        $this->deleteId = '';
+       $this->item = ''; 
+       $this->score = ''; 
        $this->activity_name = ''; 
        $this->chosen_id = ''; 
     }

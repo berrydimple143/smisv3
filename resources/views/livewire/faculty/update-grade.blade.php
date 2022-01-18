@@ -18,7 +18,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
-                            <label>Item</label>
+                            <label>Items</label>
                             <input wire:model.lazy="item" type="text" class="form-control @if($errors->has('item')) is-invalid @endif" required>
                             @error('item') <span class="invalid-feedback">{{ $message }}</span>@enderror
                         </div>                        

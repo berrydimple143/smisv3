@@ -79,10 +79,11 @@
 			            <table class="table table-sm">
 			                <thead>
     			                <tr>	
-    			                	<th style="color: white;" nowrap>Student Name</th>		
+    			                	<th style="width: 200px; color: white;" nowrap>Student Name</th>		
     			                	@foreach($listOfCriteria as $criterium)
     			                	    <th style="color: white;" nowrap>{{ $criterium->description }} ({{ $criterium->percent }}%)</th>
     			                	@endforeach
+    			                	<th style="color: white;" nowrap>Final Grade</th>
     			                    <th style="text-align: center; width: 400px; color: white;" nowrap>Action</th>
     			                </tr>
 			                </thead>
@@ -90,6 +91,33 @@
 			                    @forelse($students as $student)		
     		                        <tr>    
     		                        	<td>{{ $student->last_name }}, {{ $student->first_name }}</td>                        
+    		                            <td>
+    		                                @foreach($listOfCriteria as $criterium)
+        		                                <?php
+            		                                $items = App\Models\ClassRecord::where('section_id', $section_id)
+            		                                    ->where('subject_id', $subject_id)
+            		                                    ->where('student_id', $student->id)
+            		                                    ->where('teacher_id', $teacher_id)
+            		                                    ->where('course_id', $course_id)
+            		                                    ->where('school_year_id', $school_year_id)
+            		                                    ->where('semester_id', $semester_id)
+            		                                    ->where('criteria_id', $criterium->id)->sum('item');
+        		                                    $allScores = App\Models\ClassRecord::where('section_id', $section_id)
+            		                                    ->where('subject_id', $subject_id)
+            		                                    ->where('student_id', $student->id)
+            		                                    ->where('teacher_id', $teacher_id)
+            		                                    ->where('course_id', $course_id)
+            		                                    ->where('school_year_id', $school_year_id)
+            		                                    ->where('semester_id', $semester_id)
+            		                                    ->where('criteria_id', $criterium->id)->get();
+            		                                $total = App\Http\Controllers\HelperController::getTotal($allScores);
+            		                                $total_grades = 0;
+                		                            if($items > 0) {
+                		                                $total_grades = round($total, 2); 
+                		                            }
+        		                                ?>
+    		                                @endforeach
+    		                            </td>
     		                            <td></td>
     		                            <td></td>
     		                            <td style="text-align: right;">
@@ -97,7 +125,6 @@
                                             @if($showButton)
                                                 @foreach($listOfCriteria as $criterium)
                                                     <?php
-                                                        $url = "performance.task";
                                                         $data = [
                                                             'school_year_id' => $school_year_id,
                                                             'semester_id' => $semester_id,
@@ -108,7 +135,8 @@
                                                             'student_id' => $student->id,
                                                             'criteria_id' => $criterium->id
                                                         ];
-                                                        if($criterium->description == "Written Work") {
+                                                        $url = "performance.task";
+                                                        if(Illuminate\Support\Str::contains($criterium->description, "Written")) {
                                                             $url = "written.work";
                                                         }
                                                     ?>
@@ -119,7 +147,7 @@
     		                            </td>
     		                        </tr>
     		                    @empty
-    		                        <tr><td colspan="4">No students yet ...</td></tr>
+    		                        <tr><td colspan="5">No students yet ...</td></tr>
 		                        @endforelse
 			                </tbody>
 			            </table>

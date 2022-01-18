@@ -4,11 +4,11 @@
             @include('livewire.faculty.add-grade')
             @include('livewire.faculty.update-grade')
             <div class="card card-accent-success">	
-            	<div class="card-header">List of grades for "{{ $subject->description }}" subject of {{ $student->first_name." ".$student->last_name }} in section "{{ $section->name }}" for {{ $activity->description }}
+            	<div class="card-header">{{ $table_title }}
             	    <div class="card-header-actions">
-            	        <font size="2">
-			            <a class="card-header-action btn-setting" href="{{ config('app.url') }}faculty/written-works?school_year_id={{ $school_year_id }}&semester_id={{ $semester_id }}&course_id={{ $course_id }}&section_id={{ $section_id }}&teacher_id={{ $teacher_id }}&subject_id={{ $subject_id }}&student_id={{ $student_id }}&criteria_id={{ $criteria_id }}">
-			                << Back to written works
+            	        <font size="3">
+			            <a class="card-header-action btn-setting" href="{{ $route_link }}">
+			                << {{ $back_text }}
 			            </a>
 			            </font>
 			        </div>
