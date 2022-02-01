@@ -10,9 +10,9 @@ use App\Models\Semester;
 use App\Models\Classification;
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Assessment;
 
 use Livewire\Component;
-use App\Models\Assessment;
 use Livewire\WithPagination;
 use DB;
 use Exception;
